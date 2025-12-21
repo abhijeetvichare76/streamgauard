@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "CleanTransaction",
+  "namespace": "com.streamguard",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "product_name", "type": "string"},
+    {"name": "price", "type": "double"},
+    {"name": "quantity", "type": "int"},
+    {"name": "customer_id", "type": "string"},
+    {"name": "timestamp", "type": "long"}
+  ]
+}
