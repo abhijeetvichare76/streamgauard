@@ -4,6 +4,10 @@ terraform {
       source  = "confluentinc/confluent"
       version = "2.15.0"
     }
+    google = {
+      source  = "hashicorp/google"
+      version = "6.12.0"
+    }
   }
 }
 
@@ -12,12 +16,24 @@ provider "confluent" {
   cloud_api_secret = var.confluent_cloud_api_secret
 }
 
+provider "google" {
+  project     = var.gcp_project_id
+  region      = var.gcp_region
+  credentials = var.google_service_account_key
+}
+
 data "confluent_environment" "main" {
   id = var.confluent_environment_id
 }
 
 data "confluent_kafka_cluster" "main" {
   id = var.confluent_kafka_cluster_id
+  environment {
+    id = data.confluent_environment.main.id
+  }
+}
+
+data "confluent_schema_registry_cluster" "main" {
   environment {
     id = data.confluent_environment.main.id
   }
@@ -89,6 +105,19 @@ resource "confluent_kafka_topic" "quarantine_transactions" {
     id = data.confluent_kafka_cluster.main.id
   }
   topic_name       = "quarantine_transactions"
+  partitions_count = 3
+  rest_endpoint    = data.confluent_kafka_cluster.main.rest_endpoint
+  credentials {
+    key    = var.confluent_cluster_api_key
+    secret = var.confluent_cluster_api_secret
+  }
+}
+
+resource "confluent_kafka_topic" "threat_alerts" {
+  kafka_cluster {
+    id = data.confluent_kafka_cluster.main.id
+  }
+  topic_name       = "threat_alerts"
   partitions_count = 3
   rest_endpoint    = data.confluent_kafka_cluster.main.rest_endpoint
   credentials {
@@ -315,7 +344,7 @@ resource "confluent_flink_statement" "streamguard_router" {
         r.price,
         r.quantity,
         r.customer_id,
-        r.`timestamp`
+        r.event_time
       FROM raw_transactions r,
       LATERAL TABLE(ML_PREDICT('streamguard_validator_v4', 
         CONCAT('Validate transaction: product=', r.product_name, 
@@ -332,7 +361,7 @@ resource "confluent_flink_statement" "streamguard_router" {
         r.price,
         r.quantity,
         r.customer_id,
-        r.`timestamp`,
+        r.event_time,
         JSON_VALUE(ai.output_json, '$.reason') AS ai_reason,
         CAST(JSON_VALUE(ai.output_json, '$.confidence') AS DOUBLE) AS ai_confidence
       FROM raw_transactions r,

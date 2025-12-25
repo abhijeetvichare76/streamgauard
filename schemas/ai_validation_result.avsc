@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "QuarantineTransaction",
+  "name": "AIValidationResult",
   "namespace": "com.streamguard",
   "fields": [
     {"name": "transaction_id", "type": "string"},

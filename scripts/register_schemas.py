@@ -27,7 +27,8 @@ schemas_dir = Path(__file__).parent.parent / 'schemas'
 schema_files = [
     ('raw_transactions-value', 'raw_transaction.avsc'),
     ('clean_transactions-value', 'clean_transaction.avsc'),
-    ('quarantine_transactions-value', 'quarantine_transaction.avsc')
+    ('quarantine_transactions-value', 'quarantine_transaction.avsc'),
+    ('ai_validation_results-value', 'ai_validation_result.avsc')
 ]
 
 def register_schema(subject_name, schema_file):

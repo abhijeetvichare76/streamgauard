@@ -1,2 +1,24 @@
-confluent-kafka[avro]
+# Core
 python-dotenv
+requests
+pandas
+plotly
+
+# Confluent / Kafka
+confluent-kafka
+fastavro
+
+# Web Dashboard
+streamlit
+
+# Google Cloud
+google-cloud-bigquery
+google-cloud-aiplatform
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+
+# AI / Agents (Component 2 Requirements)
+langchain
+langchain-google-vertexai
+langchain-core

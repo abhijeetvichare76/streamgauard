@@ -39,7 +39,7 @@ producer_config = {
 
 producer = SerializingProducer(producer_config)
 
-def generate_transaction(mode='normal'):
+def generate_transaction(mode='normal', specific_attack_type=None):
     """Generate a transaction. Mode: 'normal' (valid) or 'attack' (poison pills)"""
     
     products = [
@@ -52,7 +52,10 @@ def generate_transaction(mode='normal'):
     
     if mode == 'attack':
         # Inject poison pills
-        attack_type = random.choice(['negative_price', 'zero_price', 'sql_injection', 'negative_qty'])
+        if specific_attack_type:
+             attack_type = specific_attack_type
+        else:
+             attack_type = random.choice(['negative_price', 'zero_price', 'sql_injection', 'negative_qty'])
         
         if attack_type == 'negative_price':
             return {
@@ -61,7 +64,7 @@ def generate_transaction(mode='normal'):
                 "price": -99.99,  # Invalid negative price
                 "quantity": 1,
                 "customer_id": f"cust{random.randint(1000,9999)}",
-                "timestamp": int(time.time() * 1000)
+                "event_time": int(time.time() * 1000)
             }
         elif attack_type == 'zero_price':
             return {
@@ -70,7 +73,7 @@ def generate_transaction(mode='normal'):
                 "price": 0.01,  # Suspiciously low price
                 "quantity": 1,
                 "customer_id": f"cust{random.randint(1000,9999)}",
-                "timestamp": int(time.time() * 1000)
+                "event_time": int(time.time() * 1000)
             }
         elif attack_type == 'sql_injection':
             return {
@@ -79,16 +82,16 @@ def generate_transaction(mode='normal'):
                 "price": 50.00,
                 "quantity": 1,
                 "customer_id": f"cust{random.randint(1000,9999)}",
-                "timestamp": int(time.time() * 1000)
+                "event_time": int(time.time() * 1000)
             }
-        else:  # negative quantity
+        else:  # negative quantity or other
             return {
                 "transaction_id": f"tx{int(time.time()*1000)}",
                 "product_name": "TV",
                 "price": 499.99,
                 "quantity": -5,  # Invalid negative quantity
                 "customer_id": f"cust{random.randint(1000,9999)}",
-                "timestamp": int(time.time() * 1000)
+                "event_time": int(time.time() * 1000)
             }
     else:
         # Generate valid transaction
@@ -99,24 +102,26 @@ def generate_transaction(mode='normal'):
             "price": price,
             "quantity": random.randint(1, 5),
             "customer_id": f"cust{random.randint(1000,9999)}",
-            "timestamp": int(time.time() * 1000)
+            "event_time": int(time.time() * 1000)
         }
 
 def delivery_report(err, msg):
     """Callback called once message is delivered"""
     if err is not None:
-        print(f'❌ Message delivery failed: {err}')
+        print(f'[ERROR] Message delivery failed: {err}')
     else:
-        print(f'✅ Message delivered to {msg.topic()} [{msg.partition()}]')
+        print(f'[SUCCESS] Message delivered to {msg.topic()} [{msg.partition()}]')
 
-def main(mode='normal', count=10):
+def main(mode='normal', count=10, attack_type=None):
     """Send transactions to Kafka"""
-    print(f"🚀 Starting producer in '{mode}' mode, sending {count} transactions...")
+    print(f"STARTING producer in '{mode}' mode, sending {count} transactions...")
+    if attack_type:
+        print(f"   Attack Type: {attack_type}")
     
     for i in range(count):
         try:
-            transaction = generate_transaction(mode)
-            print(f"\n📤 Sending transaction {i+1}/{count}:")
+            transaction = generate_transaction(mode, attack_type)
+            print(f"\nSENDING transaction {i+1}/{count}:")
             print(f"   Product: {transaction['product_name']}")
             print(f"   Price: ${transaction['price']}")
             print(f"   Quantity: {transaction['quantity']}")
@@ -134,9 +139,9 @@ def main(mode='normal', count=10):
             time.sleep(0.5)
             
         except Exception as e:
-            print(f"❌ Error sending transaction: {e}")
+            print(f"[ERROR] Error sending transaction: {e}")
     
-    print(f"\n✅ Finished sending {count} transactions in '{mode}' mode")
+    print(f"\n[DONE] Finished sending {count} transactions in '{mode}' mode")
 
 if __name__ == "__main__":
     import argparse
@@ -146,6 +151,8 @@ if __name__ == "__main__":
                        help='normal: valid transactions, attack: poison pills')
     parser.add_argument('--count', type=int, default=10,
                        help='Number of transactions to send')
+    parser.add_argument('--attack-type', type=str, default=None,
+                       help='Specific attack type (sql_injection, negative_price, etc.)')
     
     args = parser.parse_args()
-    main(mode=args.mode, count=args.count)
+    main(mode=args.mode, count=args.count, attack_type=args.attack_type)
