@@ -9,7 +9,9 @@
 *.tfstate
 *.tfstate.*
 *.tfvars
+*.tfplan
 .terraform.lock.hcl
+
 
 # Confluent/Credentials
 confluence-*-api-key-*.txt

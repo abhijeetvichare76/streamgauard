@@ -10,6 +10,8 @@ fastavro
 
 # Web Dashboard
 streamlit
+streamlit-echarts
+streamlit-lottie
 
 # Google Cloud
 google-cloud-bigquery
