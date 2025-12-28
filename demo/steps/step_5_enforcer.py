@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from demo.components.diagrams import render_infrastructure_flow
+from components.diagrams import render_infrastructure_flow
 
 def render():
     st.markdown('<p class="section-label">Step 5 of 6</p>', unsafe_allow_html=True)

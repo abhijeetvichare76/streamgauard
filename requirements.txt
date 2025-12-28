@@ -12,6 +12,8 @@ fastavro
 streamlit
 streamlit-echarts
 streamlit-lottie
+watchdog
+
 
 # Google Cloud
 google-cloud-bigquery
