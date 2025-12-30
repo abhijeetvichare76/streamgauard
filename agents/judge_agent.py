@@ -38,8 +38,15 @@ import os
 import tempfile
 import json
 
-def get_gcp_config():
-    """Get GCP project ID and region from Streamlit secrets or environment."""
+def setup_gcp_credentials():
+    """Set up GCP credentials via environment variables for Google ADK.
+
+    ADK reads credentials from environment variables:
+    - GOOGLE_GENAI_USE_VERTEXAI: Set to TRUE for Vertex AI
+    - GOOGLE_CLOUD_PROJECT: GCP project ID
+    - GOOGLE_CLOUD_LOCATION: Vertex AI region
+    - GOOGLE_APPLICATION_CREDENTIALS: Path to service account JSON file
+    """
     project_id = None
     region = None
 
@@ -47,9 +54,24 @@ def get_gcp_config():
     try:
         import streamlit as st
         if hasattr(st, 'secrets'):
-            # Set up authentication for Vertex AI if service account is available
+            # Set up Vertex AI mode via environment variable
+            os.environ['GOOGLE_GENAI_USE_VERTEXAI'] = 'TRUE'
+
+            # Get project ID from secrets or service account
+            project_id = st.secrets.get("GCP_PROJECT_ID")
+            if not project_id and "gcp_service_account" in st.secrets:
+                project_id = st.secrets["gcp_service_account"].get("project_id")
+
+            # Set project ID environment variable
+            if project_id:
+                os.environ['GOOGLE_CLOUD_PROJECT'] = project_id
+
+            # Get and set region
+            region = st.secrets.get("GCP_REGION", "us-central1")
+            os.environ['GOOGLE_CLOUD_LOCATION'] = region
+
+            # Set up service account credentials file
             if "gcp_service_account" in st.secrets:
-                # Write service account to temp file and set GOOGLE_APPLICATION_CREDENTIALS
                 service_account_info = dict(st.secrets["gcp_service_account"])
 
                 # Create a temporary file for the service account key
@@ -57,30 +79,19 @@ def get_gcp_config():
                 json.dump(service_account_info, temp_file)
                 temp_file.close()
 
-                # Extract project_id from service account if not already set
-                if not project_id:
-                     project_id = service_account_info.get("project_id")
-
-                # Set the environment variable that google-cloud libraries use
+                # Set the environment variable
                 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file.name
-
-            # Get project and region
-            explicit_project_id = st.secrets.get("GCP_PROJECT_ID") or st.secrets.get("gcp_project_id")
-            if explicit_project_id:
-                project_id = explicit_project_id
-            
-            region = st.secrets.get("GCP_REGION") or st.secrets.get("gcp_region") or "us-central1"
     except (ImportError, Exception) as e:
-        # Silently pass - will fall back to env vars
         pass
 
-    # Fall back to environment variables
+    # Fall back to environment variables (might already be set)
     if not project_id:
-        project_id = os.getenv("GCP_PROJECT_ID")
+        project_id = os.getenv("GOOGLE_CLOUD_PROJECT") or os.getenv("GCP_PROJECT_ID")
     if not region:
-        region = os.getenv("GCP_REGION", "us-central1")
+        region = os.getenv("GOOGLE_CLOUD_LOCATION") or os.getenv("GCP_REGION", "us-central1")
 
     return project_id, region
+
 
 # Lazy initialization - only create agent when first accessed
 _judge_agent_instance = None
@@ -89,29 +100,14 @@ def get_judge_agent():
     """Get or create the judge agent instance (lazy initialization)."""
     global _judge_agent_instance
     if _judge_agent_instance is None:
-        project_id, region = get_gcp_config()
+        # Set up credentials via environment variables (ADK reads from env vars)
+        project_id, region = setup_gcp_credentials()
 
-        # Initialize Vertex AI explicitly with credentials
-        try:
-            import streamlit as st
-            from google.oauth2 import service_account
-            import vertexai
-
-            credentials = None
-            if hasattr(st, 'secrets') and "gcp_service_account" in st.secrets:
-                # Create credentials from service account
-                credentials = service_account.Credentials.from_service_account_info(
-                    dict(st.secrets["gcp_service_account"])
-                )
-
-            # Initialize Vertex AI with explicit credentials
-            vertexai.init(project=project_id, location=region, credentials=credentials)
-        except Exception as e:
-            print(f"DEBUG: Vertex AI init failed (judge): {e}")
-
+        # ADK reads credentials from environment variables, so we don't pass them to Gemini()
+        # Just use the model name - ADK will pick up GOOGLE_GENAI_USE_VERTEXAI and other env vars
         _judge_agent_instance = Agent(
             name="judge",
-            model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
+            model=Gemini(model="gemini-2.0-flash-001"),
             description="The Judge Agent applies business policies and makes remediation decisions.",
             instruction=JUDGE_INSTRUCTION,
             tools=[]  # Judge uses reasoning, not tools
