@@ -94,6 +94,23 @@ def load_custom_css():
                 box-shadow: inset 0 0 20px rgba(0,0,0,0.6) !important;
             }
 
+            /* Log entry styling */
+            .log-entry {
+                color: #c9d1d9;
+                margin: 0.25rem 0;
+                font-family: 'JetBrains Mono', monospace;
+            }
+
+            .log-info {
+                color: #58A6FF;
+                font-weight: 600;
+            }
+
+            .log-success {
+                color: #3FB950;
+                font-weight: 600;
+            }
+
             /* Buttons - Premium Gradient */
             .stButton > button {
                 border-radius: 12px !important;
@@ -412,6 +429,7 @@ def load_custom_css():
                 position: relative;
                 background: linear-gradient(to right, transparent, #4ECDC4, transparent);
                 animation: flow-right 2s infinite linear;
+                align-self: center;
             }
             .swarm-arrow::after {
                 content: '→';
@@ -450,5 +468,372 @@ def load_custom_css():
                 height: 8px;
                 border-radius: 50%;
             }
+
+            /* ========== PLAYGROUND STYLES ========== */
+
+            /* Playground form cards */
+            .playground-card {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            /* Playground log styling */
+            .playground-log {
+                background: #0D1117;
+                border: 1px solid #30363d;
+                border-radius: 8px;
+                padding: 1rem;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.85rem;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .playground-log::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .playground-log::-webkit-scrollbar-track {
+                background: #0D1117;
+            }
+
+            .playground-log::-webkit-scrollbar-thumb {
+                background: #30363d;
+                border-radius: 3px;
+            }
+
+            /* Preset card hover effects */
+            .preset-card {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .preset-card:hover {
+                transform: translateY(-4px);
+                border-color: #4ECDC4 !important;
+                box-shadow: 0 8px 25px rgba(78, 205, 196, 0.15);
+            }
+
+            /* Decision badges */
+            .decision-badge {
+                display: inline-block;
+                padding: 0.75rem 2rem;
+                border-radius: 8px;
+                font-weight: 800;
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+
+            .decision-block { background: #FF6B6B; color: #0E1117; }
+            .decision-hold { background: #D29922; color: #0E1117; }
+            .decision-escalate { background: #9B59B6; color: #FAFAFA; }
+            .decision-approve { background: #3FB950; color: #0E1117; }
+
+            /* Resource cards in Enforcer */
+            .resource-card {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 10px;
+                padding: 1.5rem;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+
+            .resource-card:hover {
+                transform: scale(1.02);
+            }
+
+            /* Playground section divider */
+            .playground-divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #4ECDC4, transparent);
+                margin: 2rem 0;
+            }
+
+            /* Critical signal highlight */
+            .critical-signal {
+                background: rgba(255, 107, 107, 0.1);
+                border: 1px solid #FF6B6B;
+                border-radius: 8px;
+                padding: 0.5rem 1rem;
+                color: #FF6B6B;
+                font-weight: 600;
+            }
+
+            /* Sidebar styling for playground mode */
+            [data-testid="stSidebar"] {
+                background: #0D1117;
+            }
+
+            /* Form input focus states */
+            .stTextInput > div > div > input:focus,
+            .stNumberInput > div > div > input:focus {
+                border-color: #4ECDC4 !important;
+                box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2) !important;
+            }
+
+            /* Checkbox styling */
+            .stCheckbox label {
+                font-weight: 500;
+            }
+
+            /* Slider track color */
+            .stSlider > div > div > div > div {
+                background: linear-gradient(90deg, #4ECDC4, #58A6FF) !important;
+            }
+            /* Playground form cards - NEW */
+            .playground-card-new {
+                background: rgba(255, 255, 255, 0.03) !important;
+                backdrop-filter: blur(12px) !important;
+                -webkit-backdrop-filter: blur(12px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                border-radius: 16px !important;
+                padding: 1.5rem !important;
+                height: 100% !important;
+                transition: transform 0.2s ease !important;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+            }
+            .playground-card-new:hover {
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-color: rgba(255, 255, 255, 0.2) !important;
+            }
+
+            /* ========== FINAL LINEAR FLOW DIAGRAM ========== */
+            .flow-diagram {
+                margin: 2rem auto;
+                max-width: 1200px;
+                padding: 1rem;
+            }
+            
+            .pipeline-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: 100px auto; /* Row 1 for Context/BQ, Row 2 for Pipeline */
+                gap: 1rem;
+                align-items: center;
+                justify-items: center;
+                position: relative;
+            }
+            
+            /* Nodes */
+            .flow-node {
+                background: rgba(13, 17, 23, 0.9);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                padding: 1rem;
+                width: 100%;
+                max-width: 160px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                position: relative; /* For connectors */
+                z-index: 2;
+                transition: transform 0.2s ease;
+            }
+            
+            .flow-node:hover {
+                transform: translateY(-5px);
+                border-color: #4ECDC4;
+                box-shadow: 0 4px 15px rgba(78, 205, 196, 0.2);
+            }
+            
+            /* Node Areas */
+            /* Row 2: The Main Pipeline */
+            .node-input { grid-column: 1; grid-row: 2; border-color: #4ECDC4; }
+            .node-kafka { grid-column: 2; grid-row: 2; border-color: #4ECDC4; }
+            .node-flink { grid-column: 3; grid-row: 2; border-color: #FCD34D; }
+            .node-detective { grid-column: 4; grid-row: 2; border-color: #FF6B6B; }
+            .node-judge { grid-column: 5; grid-row: 2; border-color: #D29922; }
+            .node-enforcer { grid-column: 6; grid-row: 2; border-color: #3FB950; }
+            
+            /* Row 1: The Context Layer */
+            .node-bigquery { 
+                grid-column: 4; /* Aligned above Detective */
+                grid-row: 1; 
+                border-color: #58A6FF; 
+                align-self: end; /* Sit at bottom of top row to be closer */
+                margin-bottom: 2rem;
+            }
+            
+            /* Typography */
+            .node-icon { font-size: 2rem; margin-bottom: 0.25rem; }
+            .node-label { font-size: 0.8rem; font-weight: 700; color: #FAFAFA; text-transform: uppercase; }
+            .node-detail { font-size: 0.65rem; color: #8B949E; line-height: 1.2; display: none; } /* Hide details for clean look, show on hover? */
+            .flow-node:hover .node-detail { display: block; position: absolute; bottom: -40px; background: #000; padding: 5px; border-radius: 4px; border: 1px solid #333; width: 150px; }
+
+            /* ========== CONNECTORS ========== */
+            
+            /* 1. Horizontal Pipeline Arrows (Input -> Kafka -> ... -> Enforcer) */
+            /* We use pseudo-elements on the grid cell spacing or nodes */
+            .pipeline-arrow {
+                position: absolute;
+                right: -50%; /* Point to next node */
+                top: 50%;
+                transform: translateY(-50%);
+                color: #58A6FF;
+                font-size: 1.2rem;
+                font-weight: bold;
+                opacity: 0.5;
+                z-index: 1;
+            }
+            
+            /* Add arrows between pipeline nodes */
+            .node-input::after, .node-kafka::after, .node-flink::after, .node-detective::after, .node-judge::after {
+                content: "➜";
+                position: absolute;
+                right: -25px; /* In the gap */
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.2);
+                font-size: 1rem;
+            }
+            
+            /* 2. Vertical Connector: Detective <-> BigQuery */
+            .conn-det-bq {
+                position: absolute;
+                top: -35px; /* Span gap to BQ */
+                left: 50%;
+                width: 2px;
+                height: 35px;
+                border-left: 2px dashed rgba(88, 166, 255, 0.5);
+                z-index: 1;
+            }
+            
+            /* 3. Long Connector: Input -> BigQuery */
+            /* This is a large SVG or border hack. Border hack is easiest. */
+            .conn-input-bq {
+                position: absolute;
+                top: -50px;
+                left: 50%;
+                width: 300%; /* Stretch across Kafka and Flink columns */
+                height: 50px;
+                border-top: 2px dashed rgba(88, 166, 255, 0.3);
+                border-left: 2px dashed rgba(88, 166, 255, 0.3);
+                border-radius: 10px 0 0 0;
+                z-index: 0;
+                pointer-events: none;
+            }
+            /* Adjust width based on column span. Input is Col 1, BQ is Col 4. Span is 3 columns. */
+            .node-input .conn-input-bq {
+               width: 310%; /* Roughly 3 columns width + gaps */
+            }
+
+
+            .report-card {
+                border-radius: 12px;
+                padding: 0;
+                overflow: hidden;
+            }
+            .report-header {
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.03);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 700;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+            .report-body {
+                padding: 1.5rem;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.85rem;
+                line-height: 1.6;
+                color: #C9D1D9;
+            }
+
+        /* ========== CONTAINER & WIDGET STYLING ========== */
+        
+        /* Apply glassmorphism to the specific containers with borders */
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 16px !important;
+            padding: 1.5rem !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+        }
+
+        /* Input Labels - Uppercase and smaller */
+        .stTextInput label, .stNumberInput label, .stSelectbox label, .stSlider label, .stCheckbox label p {
+            font-size: 0.75rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            color: #8B949E !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
+        }
+        
+        /* Widget spacing */
+        div[data-testid="stVerticalBlock"] > div {
+            gap: 0.8rem !important;
+        }
+
+        /* ========== TOOLTIPS ========== */
+        .flow-step {
+            position: relative; /* Anchor for tooltip */
+        }
+
+        .flow-step[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(13, 17, 23, 0.9);
+            color: #C9D1D9;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Infrastructure card tooltips */
+        .infra-card {
+            position: relative;
+        }
+
+        .infra-card .tooltip {
+            position: absolute;
+            bottom: 105%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(13, 17, 23, 0.95);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .infra-card:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
         </style>
     """,unsafe_allow_html=True)

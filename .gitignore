@@ -52,3 +52,6 @@ gemini-3-report.txt
 
 # Misc
 .claude/
+.streamlit/secrets.toml
+*.old
+terraform/plan.txt

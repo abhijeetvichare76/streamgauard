@@ -34,7 +34,15 @@ def render():
         """, unsafe_allow_html=True)
 
     st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #8B949E;'>This transaction is published to the <code>customer_bank_transfers</code> Kafka topic. Flink SQL is watching...</p>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='background: rgba(78, 205, 196, 0.05); border-left: 4px solid #4ECDC4; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;'>
+        <p style='color: #FAFAFA; margin: 0 0 0.5rem 0; font-weight: 600;'>What happens next?</p>
+        <p style='color: #8B949E; margin: 0;'>
+            Betty's transaction will be published to the <code style='color: #4ECDC4;'>customer_bank_transfers</code> Kafka topic.
+            A Flink SQL statement continuously monitors this stream, filtering for high-value transfers that need AI review.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.button("Send Transaction →", type="primary", disabled=st.session_state.get('tx_triggered', False)):
         st.session_state.tx_triggered = True

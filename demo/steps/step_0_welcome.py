@@ -8,11 +8,11 @@ def render():
 <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
 <div class="reveal-item branding-logo" style="display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 4rem;">
 <div class="logo-line logo-line-left"></div>
-<span style="font-size: 2.8rem; font-weight: 900; letter-spacing: 22px; color: #4ECDC4; text-transform: uppercase; margin-right: -22px; filter: drop-shadow(0 0 15px rgba(78,205,196,0.3));">AEGIS</span>
+<span style="font-size: 2.8rem; font-weight: 900; letter-spacing: 22px; color: #4ECDC4; text-transform: uppercase; margin-right: -22px; filter: drop-shadow(0 0 15px rgba(78,205,196,0.3));">STREAMGUARD</span>
 <div class="logo-line logo-line-right"></div>
 </div>
-<h1 class="reveal-item gradient-hero" style="font-size: 4.8rem; line-height: 1.05; margin-bottom: 2rem; letter-spacing: -3px;">When Every Transaction Could Be<br>Someone's Life Savings</h1>
-<p class="reveal-item subtitle" style="font-size: 1.6rem; color: #8B949E; font-weight: 400; letter-spacing: 1px;">Real-Time Fraud Detection. Autonomous Response.</p>
+<h1 class="reveal-item gradient-hero" style="font-size: 4.8rem; line-height: 1.05; margin-bottom: 2rem; letter-spacing: -3px;">Real-Time Fraud Detection.<br>Real-Time Actions.</h1>
+<p class="reveal-item subtitle" style="font-size: 1.6rem; color: #8B949E; font-weight: 400; letter-spacing: 1px;">When Every Transaction Could Be Someone's Life Savings</p>
 </div>
 <div class="scroll-indicator" style="margin-top: 5rem;">
 <div class="scroll-text">Scroll to Begin</div>
@@ -38,13 +38,13 @@ def render():
 </div>
 <div class="sms-bubble reveal-item">
 <p style="color: #FAFAFA; font-size: 1.35rem; line-height: 1.6; margin: 0; font-weight: 300;">
-"Hello Betty, this is the fraud department at your bank. We've detected suspicious activity on your account..."
+"Grandma, it's me! I'm in trouble and need your help urgently. My car broke down and I need to pay the mechanic right away. Can you send $5,000 to this account for the repairs?"
 </p>
 </div>
 </div>
 <div style="text-align: center; margin-bottom: 4rem;">
-<p class="reveal-item" style="font-size: 1.6rem; color: #FAFAFA; margin-bottom: 0.5rem; font-weight: 600;">Betty, 75, trusted the caller.</p>
-<p class="reveal-item" style="font-size: 1.25rem; color: #8B949E; font-weight: 400;">She followed every instruction with care.</p>
+<p class="reveal-item" style="font-size: 1.6rem; color: #FAFAFA; margin-bottom: 0.5rem; font-weight: 600;">Betty, 75, recognized her grandson's voice.</p>
+<p class="reveal-item" style="font-size: 1.25rem; color: #8B949E; font-weight: 400;">It was AI-generated. But she didn't know that.</p>
 </div>
 <div style="max-width: 550px; margin: 0 auto 5rem auto; background: rgba(255,255,255,0.02); padding: 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
 <div class="reveal-item" style="margin-bottom: 1.5rem; font-size: 1.2rem; display: flex; align-items: center;"><span class="checkmark-green" style="font-size: 1.4rem;">✓</span> <span>She logged in with her own credentials</span></div>
@@ -100,7 +100,7 @@ Unlike stolen cards or hacked accounts, <b style="color: #4ECDC4;">APP fraud is 
 
 <div class="reveal-item" style="margin-bottom: 2rem;">
 <p style="font-size: 1.5rem; color: #8B949E; font-weight: 300;">While traditional systems check the <span class="strikethrough">SYSTEM</span>...</p>
-<p style="font-size: 2.2rem; color: #FAFAFA; font-weight: 700; margin-top: 1rem;">Aegis checks the <span class="human-highlight">HUMAN CONTEXT</span>.</p>
+<p style="font-size: 2.2rem; color: #FAFAFA; font-weight: 700; margin-top: 1rem;">StreamGuard checks the <span class="human-highlight">HUMAN CONTEXT</span>.</p>
 </div>
 </div>
 </section>
@@ -215,10 +215,10 @@ The system is working perfectly.<br>
 </div>
 </section>
 
-<!-- Scene 7: The Aegis Swarm -->
+<!-- Scene 7: The StreamGuard Swarm -->
 <section class="scroll-fold" id="scene-7">
 <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
-<h2 class="reveal-item" style="text-align: center; color: #4ECDC4; font-size: 3rem; margin-bottom: 1rem;">The Aegis Agent Swarm</h2>
+<h2 class="reveal-item" style="text-align: center; color: #4ECDC4; font-size: 3rem; margin-bottom: 1rem;">The StreamGuard Agent Swarm</h2>
 <p class="reveal-item" style="text-align: center; color: #8B949E; margin-bottom: 4rem;">Powered by Google Agent Development Kit (ADK)</p>
 
 <div style="display: flex; gap: 2rem; align-items: stretch; justify-content: center;">
@@ -421,21 +421,17 @@ The system is working perfectly.<br>
 <div style="text-align: center; max-width: 800px; margin: 0 auto;">
 <div class="reveal-item branding-logo" style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 3.5rem;">
 <div class="logo-line logo-line-left" style="width: 60px;"></div>
-<span style="font-size: 2rem; font-weight: 900; letter-spacing: 12px; color: #4ECDC4; text-transform: uppercase; margin-right: -12px;">AEGIS</span>
+<span style="font-size: 2rem; font-weight: 900; letter-spacing: 12px; color: #4ECDC4; text-transform: uppercase; margin-right: -12px;">STREAMGUARD</span>
 <div class="logo-line logo-line-right" style="width: 60px;"></div>
 </div>
 <h2 class="reveal-item" style="color: #FAFAFA; font-size: 3.2rem; line-height: 1.2; margin-bottom: 2rem; font-weight: 800;">Protect Your Customers.<br>Preserve Their Trust.</h2>
 <p class="reveal-item" style="color: #8B949E; font-size: 1.4rem; margin-bottom: 5rem; font-weight: 300;">
-Step inside the dashboard to see how the Aegis swarm identifies the invisible threads of fraud.
+Step inside the dashboard to see how the StreamGuard swarm identifies the invisible threads of fraud.
 </p>
 
 <div class="reveal-item" style="display: flex; justify-content: center;">
 <div id="cta-button-placeholder"></div>
 </div>
-
-<p class="reveal-item" style="color: #4B5563; font-size: 0.95rem; margin-top: 5rem; letter-spacing: 2px; font-weight: 500;">
-© 2024 STREAMGUARD AEGIS • BUILT FOR INNOVATION
-</p>
 </div>
 </section>
 </div>
@@ -461,8 +457,15 @@ background: linear-gradient(90deg, #4ECDC4, transparent);
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True) # Spacer
-        if st.button("Start Fraud Simulation →", type="primary", use_container_width=True):
+        if st.button("🚀 Start StreamGuard Fraud Detection Tutorial", type="primary", use_container_width=True):
             st.session_state.current_step = 1
             st.rerun()
+
+    # Copyright text below button
+    st.markdown("""
+    <p style="text-align: center; color: #4B5563; font-size: 0.95rem; margin-top: 3rem; letter-spacing: 2px; font-weight: 500;">
+        © 2024 STREAMGUARD • BUILT FOR INNOVATION
+    </p>
+    """, unsafe_allow_html=True)
 
     st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)

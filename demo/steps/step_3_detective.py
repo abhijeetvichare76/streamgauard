@@ -48,9 +48,9 @@ def render():
                 <p style="color: #D29922; margin-bottom: 1rem;">Target account is linked to a cluster of recent fraud alerts. Recipient age: <b>124 minutes</b>.</p>
                 <p style="color: #F85149; font-weight: 600;">CRITICAL: Real-time session data confirms user is navigating banking app while on a phone call. Social engineering signature confirmed.</p>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 2rem 0;">
-                <div style="display:flex; justify-content: space-between; align-items: center;">
+                <div style="display:flex; flex-direction: column; gap: 0.75rem;">
                     <span style="font-size: 1.4rem; font-weight:900; color: #FAFAFA;">SWARM RISK INDEX: <span style="color: #F85149;">98%</span></span>
-                    <span style="background: #F85149; color: #FAFAFA; padding: 6px 15px; border-radius: 6px; font-weight:800; font-size: 0.9rem;">ESCALATE TO JUDGE</span>
+                    <span style="color: #F85149; font-weight:800; font-size: 0.9rem;">ESCALATE TO JUDGE</span>
                 </div>
             </div>
         </div>
