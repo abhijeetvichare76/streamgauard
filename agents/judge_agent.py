@@ -35,6 +35,8 @@ Confidence: [0-100%]
 """
 
 import os
+import tempfile
+import json
 
 def get_gcp_config():
     """Get GCP project ID and region from Streamlit secrets or environment."""
@@ -45,9 +47,24 @@ def get_gcp_config():
     try:
         import streamlit as st
         if hasattr(st, 'secrets'):
-            project_id = st.secrets.get("GCP_PROJECT_ID")
-            region = st.secrets.get("GCP_REGION", "us-central1")
-    except (ImportError, Exception):
+            # Set up authentication for Vertex AI if service account is available
+            if "gcp_service_account" in st.secrets:
+                # Write service account to temp file and set GOOGLE_APPLICATION_CREDENTIALS
+                service_account_info = dict(st.secrets["gcp_service_account"])
+
+                # Create a temporary file for the service account key
+                temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json')
+                json.dump(service_account_info, temp_file)
+                temp_file.close()
+
+                # Set the environment variable that google-cloud libraries use
+                os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file.name
+
+            # Get project and region
+            project_id = st.secrets.get("GCP_PROJECT_ID") or st.secrets.get("gcp_project_id")
+            region = st.secrets.get("GCP_REGION") or st.secrets.get("gcp_region") or "us-central1"
+    except (ImportError, Exception) as e:
+        # Silently pass - will fall back to env vars
         pass
 
     # Fall back to environment variables
