@@ -40,9 +40,34 @@ Remember:
 """
 
 import os
+
+def get_gcp_config():
+    """Get GCP project ID and region from Streamlit secrets or environment."""
+    project_id = None
+    region = None
+
+    # Try Streamlit secrets first
+    try:
+        import streamlit as st
+        if hasattr(st, 'secrets'):
+            project_id = st.secrets.get("GCP_PROJECT_ID")
+            region = st.secrets.get("GCP_REGION", "us-central1")
+    except (ImportError, Exception):
+        pass
+
+    # Fall back to environment variables
+    if not project_id:
+        project_id = os.getenv("GCP_PROJECT_ID")
+    if not region:
+        region = os.getenv("GCP_REGION", "us-central1")
+
+    return project_id, region
+
+project_id, region = get_gcp_config()
+
 detective_agent = Agent(
     name="detective",
-    model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=os.getenv("GCP_PROJECT_ID"), location=os.getenv("GCP_REGION")),
+    model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
     description="The Detective Agent investigates user context, beneficiary risk, and session behavior.",
     instruction=DETECTIVE_INSTRUCTION,
     tools=[user_history_tool, beneficiary_tool, session_context_tool]

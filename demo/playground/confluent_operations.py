@@ -74,9 +74,29 @@ def get_schema_registry_config() -> dict:
 def load_schema(schema_name: str) -> str:
     """Load Avro schema from schemas directory."""
     import os
-    schema_path = os.path.join(os.path.dirname(__file__), '..', '..', 'schemas', f'{schema_name}.avsc')
-    with open(schema_path, 'r') as f:
-        return f.read()
+
+    # Try multiple paths to find the schema file
+    # On Streamlit Cloud, the root is /mount/src/<repo-name>
+    possible_paths = [
+        # From demo/playground directory up to schemas
+        os.path.join(os.path.dirname(__file__), '..', '..', 'schemas', f'{schema_name}.avsc'),
+        # Absolute path from current working directory
+        os.path.join(os.getcwd(), 'schemas', f'{schema_name}.avsc'),
+        # From the app root (for Streamlit Cloud)
+        os.path.join('/mount', 'src', 'streamguard', 'schemas', f'{schema_name}.avsc'),
+    ]
+
+    for path in possible_paths:
+        abs_path = os.path.abspath(path)
+        if os.path.exists(abs_path):
+            with open(abs_path, 'r') as f:
+                return f.read()
+
+    # If none found, raise error with all attempted paths
+    raise FileNotFoundError(
+        f"Schema '{schema_name}.avsc' not found. Tried paths:\n" +
+        "\n".join(f"  - {os.path.abspath(p)}" for p in possible_paths)
+    )
 
 
 def produce_transaction(
