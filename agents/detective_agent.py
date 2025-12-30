@@ -70,7 +70,10 @@ def get_gcp_config():
                 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file.name
 
             # Get project and region
-            project_id = st.secrets.get("GCP_PROJECT_ID") or st.secrets.get("gcp_project_id")
+            explicit_project_id = st.secrets.get("GCP_PROJECT_ID") or st.secrets.get("gcp_project_id")
+            if explicit_project_id:
+                project_id = explicit_project_id
+            
             region = st.secrets.get("GCP_REGION") or st.secrets.get("gcp_region") or "us-central1"
     except (ImportError, Exception) as e:
         # Silently pass - will fall back to env vars
