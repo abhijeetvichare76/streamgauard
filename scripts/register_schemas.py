@@ -25,10 +25,17 @@ sr_client = SchemaRegistryClient(sr_config)
 # Define schemas to register
 schemas_dir = Path(__file__).parent.parent / 'schemas'
 schema_files = [
-    ('raw_transactions-value', 'raw_transaction.avsc'),
+    # New Aegis Schemas
+    ('customer_bank_transfers-value', 'customer_bank_transfer.avsc'),
+    ('mobile_banking_sessions-value', 'mobile_banking_session.avsc'),
+    ('fraud_investigation_queue-value', 'fraud_investigation_alert.avsc'),
+
+    # Legacy/Other Project Schemas
     ('clean_transactions-value', 'clean_transaction.avsc'),
-    ('quarantine_transactions-value', 'quarantine_transaction.avsc'),
-    ('ai_validation_results-value', 'ai_validation_result.avsc')
+    ('threat_alerts-value', 'quarantine_transaction.avsc'),
+    ('ai_validation_results-value', 'ai_validation_result.avsc'),
+    # ('raw_transactions-value', 'raw_transaction.avsc'), # Replaced by customer_bank_transfers
+    # ('mobile_app_events-value', 'mobile_app_event.avsc') # Replaced by mobile_banking_sessions
 ]
 
 def register_schema(subject_name, schema_file):

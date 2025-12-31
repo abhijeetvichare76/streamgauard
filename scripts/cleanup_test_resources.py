@@ -37,12 +37,64 @@ BIGQUERY_DATASET = os.getenv('BIGQUERY_DATASET', 'streamguard_threats')
 
 admin_client = AdminClient(KAFKA_CONFIG)
 
+
+# Schema Registry Configuration
+SR_CONFIG = {
+    'url': os.getenv('CONFLUENT_SCHEMA_REGISTRY_URL'),
+    'basic.auth.user.info': f"{os.getenv('CONFLUENT_SR_API_KEY')}:{os.getenv('CONFLUENT_SR_API_SECRET')}"
+}
+
+from confluent_kafka.schema_registry import SchemaRegistryClient
+
+def cleanup_schema_registry():
+    """Delete legacy schemas from Schema Registry"""
+    print("\n🧹 [0/4] Scanning for legacy Schema Registry subjects...")
+    
+    try:
+        sr_client = SchemaRegistryClient(SR_CONFIG)
+        subjects = sr_client.get_subjects()
+        
+        legacy_subjects = [
+            'raw_transactions-value',
+            'mobile_app_events-value',
+            'threat_alerts-value',
+            'ai_validation_results-value',
+            'quarantine_transactions-value',
+            'fraud-quarantine-transaction-value'
+        ]
+        
+        # Also include any test schemas
+        test_subjects = [s for s in subjects if s.startswith('quarantine_') or s.startswith('fraud-quarantine-')]
+        
+        targets = [s for s in subjects if s in legacy_subjects] + test_subjects
+        
+        if not targets:
+            print("   ✅ No legacy/test schemas found.")
+            return
+
+        print(f"   🗑️  Deleting {len(targets)} schemas: {targets}")
+        
+        for subject in targets:
+            try:
+                # Delete the subject (soft delete)
+                sr_client.delete_subject(subject)
+                # Hard delete (permanent) - requires second call
+                sr_client.delete_subject(subject, permanent=True)
+                print(f"      ✓ Deleted subject: {subject}")
+            except Exception as e:
+                print(f"      ✗ Failed to delete {subject}: {e}")
+                
+    except Exception as e:
+        print(f"   ⚠️  Error accessing Schema Registry: {e}")
+
 def cleanup_kafka_topics():
     """Delete test Kafka topics"""
     print("\n🧹 [1/4] Scanning for test Kafka topics...")
     topics = admin_client.list_topics(timeout=10).topics
     
-    test_topics = [t for t in topics if t.startswith("quarantine_test_verify") or t.startswith("quarantine_sql_injection") or t.startswith("quarantine_price_anomaly") or t.startswith("quarantine_xss_attack")]
+    test_topics = [t for t in topics if t.startswith("quarantine_") or t.startswith("fraud-quarantine-") or t.startswith("quarantine_sql_injection")]
+    core_topics = ["customer_bank_transfers", "fraud_investigation_queue"]
+    test_topics = [t for t in test_topics if t not in core_topics]
     
     if not test_topics:
         print("   ✅ No test topics found.")
@@ -75,8 +127,9 @@ def cleanup_flink_statements():
         test_statements = []
         for s in statements:
             name = s.get("name") or s.get("metadata", {}).get("name")
-            if name and (name.startswith("route-test") or name.startswith("route-quarantine") or name.startswith("route-sql-injection")):
-                test_statements.append(name)
+            if name and (name.startswith("route-") or name.startswith("quarantine-")):
+                if name != "fraud_investigation_trigger":
+                    test_statements.append(name)
         
         if not test_statements:
             print("   ✅ No test Flink statements found.")
@@ -137,7 +190,7 @@ def cleanup_connectors():
             else:
                 # Assume the item is a plain string representing the connector name.
                 name = str(item)
-            if (name.startswith("quarantine_test_verify") or name.startswith("quarantine_sql_injection") or name.startswith("quarantine_price_anomaly") or name.startswith("quarantine_xss_attack")) and name.endswith("-sink"):
+            if (name.startswith("quarantine") or name.startswith("sink-") or name.startswith("fraud-")):
                 # Store as a simple dict for later deletion logic.
                 test_connectors.append({"name": name})
 
@@ -173,7 +226,7 @@ def cleanup_bigquery_tables():
         dataset_ref = client.dataset(BIGQUERY_DATASET)
         
         tables = list(client.list_tables(dataset_ref))
-        test_tables = [t for t in tables if t.table_id.startswith("quarantine_test_verify") or t.table_id.startswith("quarantine_sql_injection") or t.table_id.startswith("quarantine_price_anomaly") or t.table_id.startswith("quarantine_xss_attack")]
+        test_tables = [t for t in tables if t.table_id.startswith("quarantine_") or t.table_id.startswith("fraud_") or t.table_id.startswith("sink_")]
         
         if not test_tables:
             print("   ✅ No test BigQuery tables found.")
@@ -198,6 +251,7 @@ def cleanup():
     print("🚀 CLEANUP TEST RESOURCES - Confluent Cloud & GCP")
     print("=" * 70)
     
+    cleanup_schema_registry()
     cleanup_kafka_topics()
     cleanup_flink_statements()
     cleanup_connectors()

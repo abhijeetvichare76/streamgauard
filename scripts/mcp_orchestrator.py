@@ -72,7 +72,7 @@ FLINK_API_SECRET = os.getenv('FLINK_API_SECRET')
 FLINK_COMPUTE_POOL_ID = os.getenv('FLINK_COMPUTE_POOL_ID')  # lfcp-wd2or9
 CONFLUENT_ENVIRONMENT_ID = os.getenv('CONFLUENT_ENVIRONMENT_ID')  # env-znxp3y
 CONFLUENT_ORG_ID = os.getenv('CONFLUENT_ORGANIZATION_ID')  # From confluent org list
-CONFLUENT_KAFKA_CLUSTER_ID = os.getenv('CONFLUENT_KAFKA_CLUSTER_ID')  # lkc-72562o
+CONFLUENT_KAFKA_CLUSTER_ID = os.getenv('CONFLUENT_KAFKA_CLUSTER_ID', 'lkc-kvwkn6')
 
 # Connect API Configuration
 CONNECT_API_BASE = "https://api.confluent.cloud/connect/v1"
@@ -270,10 +270,6 @@ class Orchestrator:
                 }
             }
             
-            # DEBUG: Show exactly what we're sending to the API
-            print(f"   DEBUG - Payload being sent to Flink API:")
-            print(f"   {json.dumps(payload, indent=4)}")
-            
             # Make API request
             try:
                 response = requests.post(
@@ -285,8 +281,7 @@ class Orchestrator:
                 response.raise_for_status()
                 
                 result = response.json()
-                print(f"   DEBUG - Flink response: {json.dumps(result, indent=2)}")
-                
+
                 # Extract statement name from response (could be in metadata.name or name)
                 statement_id = result.get("metadata", {}).get("name") or result.get("name")
                 
@@ -387,8 +382,7 @@ class Orchestrator:
                 response.raise_for_status()
                 
                 result = response.json()
-                print(f"   DEBUG - Connector response: {json.dumps(result, indent=2)}")
-                
+
                 # Confluent Connect API returns "name" not "id"
                 connector_id = result.get("name") or result.get("id")
                 
