@@ -57,23 +57,6 @@ class PlaygroundInvestigator:
                       Dict format: {"type": "...", "content": "...", ...}
         """
         self.on_event = on_event
-        if self.on_event:
-            self._emit("log", "DEBUG: Initializing PlaygroundInvestigator...")
-            # Debug credential resolution
-            if HAS_STREAMLIT and hasattr(st, 'secrets'):
-                proj_id = st.secrets.get("GCP_PROJECT_ID")
-                if proj_id:
-                     self._emit("log", f"DEBUG: Found GCP_PROJECT_ID: {proj_id}")
-                else:
-                     self._emit("warning", "DEBUG: GCP_PROJECT_ID not found in top-level secrets")
-
-                if "gcp_service_account" in st.secrets:
-                    sa_proj = st.secrets["gcp_service_account"].get("project_id")
-                    self._emit("log", f"DEBUG: Found gcp_service_account with project_id: {sa_proj}")
-                else:
-                    self._emit("warning", "DEBUG: gcp_service_account block not found in secrets")
-            else:
-                 self._emit("warning", "DEBUG: No Streamlit secrets found")
 
     def _emit(self, event_type: str, content: str, **kwargs):
         """Emit an event to the callback."""

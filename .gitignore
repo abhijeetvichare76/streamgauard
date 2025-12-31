@@ -49,6 +49,9 @@ _AI/
 *.md
 !README.md
 gemini-3-report.txt
+ideas-testing/
+tests/
+lineage.json
 
 # Misc
 .claude/

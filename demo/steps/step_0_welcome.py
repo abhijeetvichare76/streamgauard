@@ -166,19 +166,19 @@ The system is working perfectly.<br>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-bottom: 4rem;">
 <div class="metric-box reveal-item">
-<p class="metric-value">£479M</p>
-<p class="metric-label">Lost to APP Fraud in UK (2023)</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: UK Finance</p>
+<p class="metric-value">$12.5B</p>
+<p class="metric-label">US Fraud Losses (2024 Est.)</p>
+<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: FTC Data</p>
 </div>
 <div class="metric-box reveal-item">
 <p class="metric-value">80%</p>
-<p class="metric-label">Of victims were on a call with scammer</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: Which?</p>
+<p class="metric-label">Of victims on a call with scammer</p>
+<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: FCC Reports</p>
 </div>
 <div class="metric-box reveal-item">
-<p class="metric-value">3x</p>
-<p class="metric-label">Higher risk for customers over 65</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: FTC Data</p>
+<p class="metric-value">77%</p>
+<p class="metric-label">Success rate of AI Voice Scams</p>
+<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: McAfee</p>
 </div>
 </div>
 
@@ -262,159 +262,31 @@ The system is working perfectly.<br>
 </div>
 </section>
 
-<!-- Scene 8: System Architecture -->
-<section class="scroll-fold" id="scene-8">
-<div style="max-width: 1200px; margin: 0 auto; width: 100%;">
-<h2 class="reveal-item" style="text-align: center; color: #4ECDC4; font-size: 2.8rem; margin-bottom: 4rem;">System Architecture</h2>
+"""
+    # Render first part of narrative
+    st.markdown(narrative_html, unsafe_allow_html=True)
 
-<!-- Layer 1: Confluent Cloud -->
-<div class="reveal-item" style="background: rgba(88, 166, 255, 0.05); border: 2px solid #58A6FF; border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem;">
-<h3 style="color: #58A6FF; font-size: 1.4rem; margin-bottom: 2rem; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Confluent Cloud</h3>
+    # Scene 8: System Architecture (Dynamic Code-Based Diagram)
+    st.markdown('<section class="scroll-fold" id="scene-8"><div style="max-width: 1200px; margin: 0 auto; width: 100%;">', unsafe_allow_html=True)
+    st.markdown('<h2 class="reveal-item" style="text-align: center; color: #4ECDC4; font-size: 2.8rem; margin-bottom: 4rem;">System Architecture</h2>', unsafe_allow_html=True)
+    
+    try:
+        import os
+        if os.path.exists("demo/assets/aegis_architecture.png"):
+            # Use columns to center the image effectively
+            col_spacer1, col_img, col_spacer2 = st.columns([1, 8, 1])
+            with col_img:
+                st.image("demo/assets/aegis_architecture.png", width="stretch")
+                st.markdown('<p style="text-align: center; color: #8B949E; margin-top: 1rem; font-style: italic;">Generated via Diagrams as Code</p>', unsafe_allow_html=True)
+        else:
+            st.warning("Architecture diagram not found at 'demo/assets/aegis_architecture.png'. Please generate it.")
+    except Exception as e:
+        st.error(f"Error displaying architecture: {e}")
 
-<div style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center;">
-<!-- Kafka Topic 1 -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem; max-width: 600px; width: 100%;">
-<div style="display: flex; justify-content: space-between; align-items: center;">
-<div>
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 0.5rem 0;">customer_bank_transfers</p>
-<p style="color: #8B949E; font-size: 0.85rem; margin: 0;">(Kafka Topic)</p>
-</div>
-<div style="text-align: right; font-size: 0.8rem; color: #8B949E;">
-<p style="margin: 0;">Every bank transfer streams here</p>
-<p style="margin: 0;">in real-time with fraud signals</p>
-</div>
-</div>
-</div>
+    st.markdown('</div></section>', unsafe_allow_html=True)
 
-<div class="arch-arrow"></div>
-
-<!-- Flink SQL -->
-<div style="background: rgba(155, 89, 182, 0.1); border: 1px solid rgba(155, 89, 182, 0.3); border-radius: 12px; padding: 1.5rem; max-width: 600px; width: 100%;">
-<p style="color: #9B59B6; font-weight: 700; margin: 0 0 0.5rem 0;">FLINK SQL - High-Value Filter</p>
-<p style="color: #8B949E; font-size: 0.85rem; margin: 0 0 0.5rem 0;">Continuous query: <code style="color: #4ECDC4;">WHERE amount > $1000</code></p>
-<p style="color: #8B949E; font-size: 0.85rem; margin: 0;">Flags for inspection (NOT fraud — needs review)</p>
-</div>
-
-<div class="arch-arrow"></div>
-
-<!-- Kafka Topic 2 -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem; max-width: 600px; width: 100%;">
-<div style="display: flex; justify-content: space-between; align-items: center;">
-<div>
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 0.5rem 0;">investigation_queue</p>
-<p style="color: #8B949E; font-size: 0.85rem; margin: 0;">(Kafka Topic)</p>
-</div>
-<div style="text-align: right; font-size: 0.8rem; color: #8B949E;">
-<p style="margin: 0;">Queues transaction for</p>
-<p style="margin: 0;">agent investigation</p>
-<p style="margin: 0; color: #FF6B6B;">Priority: HIGH</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="arch-arrow" style="margin: 2rem auto;"></div>
-
-<!-- Layer 2: Google ADK Agent Swarm -->
-<div class="reveal-item" style="background: rgba(255, 107, 107, 0.05); border: 2px solid #FF6B6B; border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem;">
-<h3 style="color: #FF6B6B; font-size: 1.4rem; margin-bottom: 2rem; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Google ADK Agent Swarm</h3>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-<!-- Detective -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 0.5rem;">🕵️</div>
-<p style="color: #FF6B6B; font-weight: 700; margin: 0 0 0.5rem 0;">DETECT</p>
-<p style="color: #8B949E; font-size: 0.8rem; margin: 0;">Gathers context</p>
-</div>
-
-<!-- Judge -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(210, 153, 34, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 0.5rem;">⚖️</div>
-<p style="color: #D29922; font-weight: 700; margin: 0 0 0.5rem 0;">JUDGE</p>
-<p style="color: #8B949E; font-size: 0.8rem; margin: 0;">Applies policies</p>
-</div>
-
-<!-- Enforcer -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(78, 205, 196, 0.3); border-radius: 12px; padding: 1.5rem; text-align: center;">
-<div style="font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
-<p style="color: #4ECDC4; font-weight: 700; margin: 0 0 0.5rem 0;">ENFORCE</p>
-<p style="color: #8B949E; font-size: 0.8rem; margin: 0;">Takes action</p>
-</div>
-</div>
-
-<!-- Data Sources and Outputs -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-<!-- Detective Queries -->
-<div>
-<p style="color: #8B949E; font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">↓ Queries</p>
-<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem;">
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 0.5rem 0;">BigQuery Context</p>
-<ul style="color: #8B949E; font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
-<li>customer_profiles</li>
-<li>beneficiary_graph</li>
-<li>mobile_sessions</li>
-</ul>
-</div>
-</div>
-
-<!-- Enforcer Creates -->
-<div>
-<p style="color: #8B949E; font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">↓ Creates</p>
-<div style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem;">
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 0.5rem 0;">Confluent Infrastructure</p>
-<ul style="color: #8B949E; font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
-<li>Quarantine Topics</li>
-<li>Flink Routing</li>
-<li>BigQuery Sinks</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-
-<div class="arch-arrow" style="margin: 2rem auto;"></div>
-
-<!-- Layer 3: Google BigQuery -->
-<div class="reveal-item" style="background: rgba(88, 166, 255, 0.05); border: 2px solid #58A6FF; border-radius: 16px; padding: 2.5rem;">
-<h3 style="color: #58A6FF; font-size: 1.4rem; margin-bottom: 2rem; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Google BigQuery</h3>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-<!-- Context Tables -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem;">
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 1rem 0; text-align: center;">CONTEXT TABLES</p>
-<p style="color: #8B949E; font-size: 0.8rem; margin: 0 0 1rem 0; text-align: center;">(Detective queries)</p>
-<ul style="color: #8B949E; font-size: 0.85rem; margin: 0 0 1rem 0; padding-left: 1.2rem;">
-<li>customer_profiles</li>
-<li>beneficiary_graph</li>
-<li>mobile_sessions</li>
-</ul>
-<div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"Who is this user?"</p>
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"Is recipient risky?"</p>
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"What's happening?"</p>
-</div>
-</div>
-
-<!-- Audit Tables -->
-<div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(88, 166, 255, 0.3); border-radius: 12px; padding: 1.5rem;">
-<p style="color: #58A6FF; font-weight: 700; margin: 0 0 1rem 0; text-align: center;">AUDIT TABLES</p>
-<p style="color: #8B949E; font-size: 0.8rem; margin: 0 0 1rem 0; text-align: center;">(Enforcer writes)</p>
-<ul style="color: #8B949E; font-size: 0.85rem; margin: 0 0 1rem 0; padding-left: 1.2rem;">
-<li>fraud_quarantine_*</li>
-<li>investigation_logs</li>
-<li>decision_audit</li>
-</ul>
-<div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"What did we decide?"</p>
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"Why did we act?"</p>
-<p style="color: #4ECDC4; font-size: 0.85rem; margin: 0.25rem 0;">"Full audit trail"</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+    # Start second part of narrative for Scene 9
+    narrative_html_2 = """
 
 <!-- Scene 9: Call to Action -->
 <section class="scroll-fold" id="scene-9" style="min-height: 80vh;">
@@ -450,8 +322,8 @@ background: linear-gradient(90deg, #4ECDC4, transparent);
 }
 </style>
     """
-    # Render narrative block
-    st.markdown(narrative_html, unsafe_allow_html=True)
+    # Render second narrative block
+    st.markdown(narrative_html_2, unsafe_allow_html=True)
 
     # CTA Button
     col1, col2, col3 = st.columns([1, 2, 1])
