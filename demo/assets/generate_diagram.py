@@ -17,8 +17,8 @@ from diagrams.generic.blank import Blank
 graph_attr = {
     "rankdir": "LR",
     "bgcolor": "white",
-    "dpi": "350",  # Balanced resolution for web viewing
-    "splines": "ortho",  # Orthogonal edges for cleaner look
+    "dpi": "400",  # Balanced resolution for web viewing
+    "splines": "polyline",  # Curved edges for better label placement (try "ortho" or "polyline" for alternatives)
     "nodesep": "0.8",
     "ranksep": "1.2"
 }
@@ -34,9 +34,9 @@ with Diagram("StreamGuard Aegis Architecture (Enhanced)", show=False, filename="
         # Flink SQL
         flink_filter = Flink("Flink SQL\nFraud Detector\n(Risk Scoring)")
 
-        # Flow
-        tx_topic >> Edge(label="Stream") >> flink_filter
-        flink_filter >> Edge(label="Suspicious Txs", color="red") >> investigation_topic
+        # Flow - with cohesive labels using smaller fonts and thicker lines
+        tx_topic >> Edge(label="Stream", fontsize="9", penwidth="2.0") >> flink_filter
+        flink_filter >> Edge(label="Suspicious Txs", color="red", fontsize="9", penwidth="2.5") >> investigation_topic
 
     # Layer 2: Agent Intelligence Layer
     with Cluster("Agent Intelligence Layer (Google ADK)"):
@@ -50,10 +50,10 @@ with Diagram("StreamGuard Aegis Architecture (Enhanced)", show=False, filename="
             tool2 = Datastore("Beneficiary Risk\nTool")
             tool3 = Datastore("Session Context\nTool")
 
-            # Parallel tool calls
-            detective >> Edge(label="1", style="dotted", color="blue") >> tool1
-            detective >> Edge(label="2", style="dotted", color="blue") >> tool2
-            detective >> Edge(label="3", style="dotted", color="blue") >> tool3
+            # Parallel tool calls - using xlabel for numbered labels
+            detective >> Edge(xlabel="1", style="dotted", color="blue", fontsize="9", penwidth="1.5") >> tool1
+            detective >> Edge(xlabel="2", style="dotted", color="blue", fontsize="9", penwidth="1.5") >> tool2
+            detective >> Edge(xlabel="3", style="dotted", color="blue", fontsize="9", penwidth="1.5") >> tool3
 
         # Validation Layer
         with Cluster("Validation & Policy", graph_attr={"bgcolor": "#f8f4e8"}):
@@ -67,14 +67,14 @@ with Diagram("StreamGuard Aegis Architecture (Enhanced)", show=False, filename="
         # Enforcer Agent
         enforcer = Functions("Enforcer\n(Execution)")
 
-        # Agent Flow with structured communication
-        investigation_topic >> Edge(label="Threat Data", style="bold") >> detective
+        # Agent Flow with structured communication - cohesive labels
+        investigation_topic >> Edge(label="Threat Data", style="bold", fontsize="9", penwidth="2.5") >> detective
 
-        detective >> Edge(label="JSON Output\n(InvestigationReport)", color="green") >> pydantic
-        pydantic >> Edge(label="Validated", color="green") >> judge
+        detective >> Edge(label="JSON Output\n(InvestigationReport)", color="green", fontsize="9", penwidth="2.0") >> pydantic
+        pydantic >> Edge(label="Validated", color="green", fontsize="9", penwidth="2.0") >> judge
 
-        judge >> Edge(label="JSON Output\n(JudgmentDecision)", color="orange") >> policy_engine
-        policy_engine >> Edge(label="Validated Decision", color="orange") >> enforcer
+        judge >> Edge(label="JSON Output\n(JudgmentDecision)", color="orange", fontsize="9", penwidth="2.0") >> policy_engine
+        policy_engine >> Edge(label="Validated Decision", color="orange", fontsize="9", penwidth="2.0") >> enforcer
 
     # Layer 3: Data Layer (Google Cloud Platform)
     with Cluster("Google Cloud Platform (Data Layer)"):
@@ -85,13 +85,13 @@ with Diagram("StreamGuard Aegis Architecture (Enhanced)", show=False, filename="
             # Audit tables for decisions
             audit_tables = BigQuery("Audit Tables\nDecisions | Logs | Metrics")
 
-            # Tool connections to BigQuery
-            tool1 >> Edge(label="Query", style="dashed") >> context_tables
-            tool2 >> Edge(label="Query", style="dashed") >> context_tables
-            tool3 >> Edge(label="Query", style="dashed") >> context_tables
+            # Tool connections to BigQuery - using headlabel for precise positioning
+            tool1 >> Edge(headlabel="Query", style="dashed", labeldistance="0.5", labelangle="-30", fontsize="9") >> context_tables
+            tool2 >> Edge(headlabel="Query", style="dashed", labeldistance="0.5", labelangle="-30", fontsize="9") >> context_tables
+            tool3 >> Edge(headlabel="Query", style="dashed", labeldistance="0.5", labelangle="-30", fontsize="9") >> context_tables
 
             # Enforcer writes audit logs
-            enforcer >> Edge(label="Write Logs", color="gray") >> audit_tables
+            enforcer >> Edge(label="Write Logs", color="gray", fontsize="9", penwidth="1.5") >> audit_tables
 
     # Layer 4: Enforcement Actions
     with Cluster("Enforcement Actions"):
@@ -99,35 +99,39 @@ with Diagram("StreamGuard Aegis Architecture (Enhanced)", show=False, filename="
         safe_queue = Kafka("Safe Queue\n(Approved Txs)")
         escalation = Kafka("Escalation Topic\n(Human Review)")
 
-        # Enforcer provisions to different queues based on decision
-        enforcer >> Edge(label="BLOCK", color="red") >> quarantine
-        enforcer >> Edge(label="SAFE", color="green") >> safe_queue
-        enforcer >> Edge(label="ESCALATE", color="purple") >> escalation
+        # Enforcer provisions to different queues based on decision - cohesive labels
+        enforcer >> Edge(label="BLOCK", color="red", fontsize="9", penwidth="2.5") >> quarantine
+        enforcer >> Edge(label="SAFE", color="green", fontsize="9", penwidth="2.5") >> safe_queue
+        enforcer >> Edge(label="ESCALATE", color="purple", fontsize="9", penwidth="2.5") >> escalation
 
-    # Legend - compact format
+    # Legend - using HTML table with visual arrow examples
     with Cluster("Legend", graph_attr={
-        "bgcolor": "#f0f0f0",
+        "bgcolor": "#f9f9f9",
         "style": "filled,rounded",
-        "fontsize": "10",
-        "labeljust": "l",
-        "margin": "10"
+        "margin": "12"
     }):
-        # Create a single node with all legend info
-        from diagrams.generic.blank import Blank
-        legend_text = (
-            "COLORS:\n"
-            "• Red = Block\n"
-            "• Green = Safe/Approved\n"
-            "• Purple = Escalate\n"
-            "• Blue = Tool Calls\n"
-            "• Gray = Audit\n\n"
-            "STYLES:\n"
-            "• Solid = Primary\n"
-            "• Dotted = Tools\n"
-            "• Dashed = Query\n"
-            "• Bold = Input"
+        # Import Node for creating HTML table legend
+        from diagrams import Node as GraphNode
+
+        legend = GraphNode(
+            label="""<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white">
+                <TR><TD COLSPAN="2" BGCOLOR="#dddddd"><B>Legend</B></TD></TR>
+                <TR><TD COLSPAN="2" BGCOLOR="#eeeeee"><B>Edge Colors</B></TD></TR>
+                <TR><TD><FONT COLOR="red">●━━━●</FONT></TD><TD ALIGN="LEFT">Block/Error</TD></TR>
+                <TR><TD><FONT COLOR="green">●━━━●</FONT></TD><TD ALIGN="LEFT">Safe/Approved</TD></TR>
+                <TR><TD><FONT COLOR="purple">●━━━●</FONT></TD><TD ALIGN="LEFT">Escalate</TD></TR>
+                <TR><TD><FONT COLOR="blue">●━━━●</FONT></TD><TD ALIGN="LEFT">Tool Calls</TD></TR>
+                <TR><TD><FONT COLOR="gray">●━━━●</FONT></TD><TD ALIGN="LEFT">Audit/Logging</TD></TR>
+                <TR><TD COLSPAN="2" BGCOLOR="#eeeeee"><B>Edge Styles</B></TD></TR>
+                <TR><TD>●━━━●</TD><TD ALIGN="LEFT">Primary Flow</TD></TR>
+                <TR><TD>●┈┈┈●</TD><TD ALIGN="LEFT">Tool/Dotted</TD></TR>
+                <TR><TD>●╌╌╌●</TD><TD ALIGN="LEFT">Query/Dashed</TD></TR>
+                <TR><TD><B>●━━━●</B></TD><TD ALIGN="LEFT">Input/Bold</TD></TR>
+            </TABLE>
+            >""",
+            shape="plaintext"
         )
-        Blank(legend_text)
 
 print("Diagram generated successfully at demo/assets/aegis_architecture.png")
 print("Enhanced with: Structured communication, Policy engine, Tool calls, Validation")
