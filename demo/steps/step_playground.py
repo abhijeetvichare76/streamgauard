@@ -156,7 +156,8 @@ def run_investigation():
 
     transaction_data = {
         "transaction_id": tx_id,
-        "sender_user_id": st.session_state.form_user_id,
+        "user_id": st.session_state.form_user_id,  # For investigator
+        "sender_user_id": st.session_state.form_user_id,  # For Kafka schema
         "beneficiary_account_id": st.session_state.form_acc_id,
         "amount": st.session_state.form_amount,
         "currency": st.session_state.form_currency,
@@ -234,7 +235,13 @@ def run_investigation():
                 else:
                     investigator = SimulatedInvestigator(on_event=add_log)
 
-                result = investigator.investigate_sync({"transaction_id": tx_id, **transaction_data})
+                result = investigator.investigate_sync({
+                    "transaction_id": tx_id,
+                    **transaction_data,
+                    "session": session_data,
+                    "customer_profile": customer_data,
+                    "beneficiary_data": beneficiary_data
+                })
                 st.session_state.investigation_result = result
 
                 # Phase 5: Real enforcement
@@ -271,7 +278,13 @@ def run_investigation():
         else:
             investigator = SimulatedInvestigator(on_event=add_log)
 
-        tx_for_agents = {"transaction_id": tx_id, **transaction_data, "session": session_data}
+        tx_for_agents = {
+            "transaction_id": tx_id,
+            **transaction_data,
+            "session": session_data,
+            "customer_profile": customer_data,
+            "beneficiary_data": beneficiary_data
+        }
         result = investigator.investigate_sync(tx_for_agents)
         st.session_state.investigation_result = result
 
@@ -593,20 +606,60 @@ def render():
         col_det, col_judge = st.columns(2)
 
         with col_det:
-            render_report_card(
-                "DETECTIVE REPORT",
-                result.get("investigation", "No report available"),
-                icon="🔍",
-                border_color="#58A6FF"
-            )
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
+                        border: 1px solid rgba(88, 166, 255, 0.3);
+                        border-radius: 12px;
+                        padding: 1.5rem;
+                        margin-bottom: 1.5rem;">
+                <h4 style="color: #58A6FF; margin: 0 0 1rem 0; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase;">
+                    🔍 DETECTIVE REPORT
+                </h4>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Extract JSON from markdown code block
+            investigation_text = result.get("investigation", "")
+            import re
+            import json
+
+            # Try to extract JSON from ```json ``` blocks
+            json_match = re.search(r'```json\s*(\{.*?\})\s*```', investigation_text, re.DOTALL)
+            if json_match:
+                try:
+                    detective_data = json.loads(json_match.group(1))
+                    st.json(detective_data, expanded=True)
+                except:
+                    st.code(investigation_text, language="json")
+            else:
+                st.markdown(investigation_text)
 
         with col_judge:
-            render_report_card(
-                "JUDGE DECISION",
-                result.get("judgment", "No judgment available"),
-                icon="⚖️",
-                border_color="#FF6B6B"
-            )
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(210, 153, 34, 0.1) 100%);
+                        border: 1px solid rgba(255, 107, 107, 0.3);
+                        border-radius: 12px;
+                        padding: 1.5rem;
+                        margin-bottom: 1.5rem;">
+                <h4 style="color: #FF6B6B; margin: 0 0 1rem 0; font-size: 1rem; letter-spacing: 2px; text-transform: uppercase;">
+                    ⚖️ JUDGE DECISION
+                </h4>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Extract JSON from markdown code block
+            judgment_text = result.get("judgment", "")
+
+            # Try to extract JSON from ```json ``` blocks
+            json_match = re.search(r'```json\s*(\{.*?\})\s*```', judgment_text, re.DOTALL)
+            if json_match:
+                try:
+                    judge_data = json.loads(json_match.group(1))
+                    st.json(judge_data, expanded=True)
+                except:
+                    st.code(judgment_text, language="json")
+            else:
+                st.markdown(judgment_text)
 
     # Enforcer results
     if st.session_state.enforcement_result:

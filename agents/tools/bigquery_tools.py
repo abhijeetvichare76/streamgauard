@@ -9,6 +9,18 @@ from .bigquery_utils import retry_query_with_backoff
 # Load environment variables
 load_dotenv()
 
+def _get_form_fallback(data_type: str, key: str):
+    """Get form data from Streamlit session state as fallback."""
+    try:
+        import streamlit as st
+        if hasattr(st, 'session_state'):
+            form_key = f"form_{key}"
+            if form_key in st.session_state:
+                return st.session_state[form_key]
+    except (ImportError, Exception):
+        pass
+    return None
+
 # Initialize client lazily to avoid errors if credentials are missing during import
 def get_client():
     """
@@ -87,7 +99,20 @@ def get_user_history(user_id: str) -> dict:
         row = retry_query_with_backoff(execute_query, max_retries=3, initial_delay=2)
 
         if not row:
-            print(f"[BQ] User {user_id} not found after retries")
+            print(f"[BigQuery] User {user_id} not found after retries, trying form fallback...")
+
+            # Try to get data from form (playground mode)
+            form_user = _get_form_fallback("user", "user_id")
+            if form_user == user_id:
+                print(f"[BigQuery] Using form data for user {user_id}")
+                return {
+                    "user_id": user_id,
+                    "age_group": _get_form_fallback("user", "age_group"),
+                    "account_tenure_days": _get_form_fallback("user", "tenure"),
+                    "avg_transfer_amount": _get_form_fallback("user", "avg_transfer"),
+                    "behavioral_segment": _get_form_fallback("user", "segment")
+                }
+
             return {"user_id": user_id, "status": "not_found", "risk": "unknown"}
 
         return {
@@ -149,8 +174,20 @@ def get_beneficiary_risk(account_id: str) -> dict:
         row = retry_query_with_backoff(execute_query, max_retries=3, initial_delay=2)
 
         if not row:
-            # Default to high risk for unknown new accounts in this strict context
-            print(f"[BQ] Beneficiary account {account_id} not found after retries")
+            print(f"[BigQuery] Beneficiary {account_id} not found after retries, trying form fallback...")
+
+            # Try to get data from form (playground mode)
+            form_acc = _get_form_fallback("beneficiary", "acc_id")
+            if form_acc == account_id:
+                print(f"[BigQuery] Using form data for beneficiary {account_id}")
+                return {
+                    "account_id": account_id,
+                    "account_age_hours": _get_form_fallback("beneficiary", "acc_age"),
+                    "risk_score": _get_form_fallback("beneficiary", "risk_score"),
+                    "linked_to_flagged_device": _get_form_fallback("beneficiary", "flagged_device")
+                }
+
+            # Default to high risk for unknown new accounts
             return {"account_id": account_id, "status": "unknown_account", "risk_score": 50}
 
         return {

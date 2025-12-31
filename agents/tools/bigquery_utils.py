@@ -24,16 +24,16 @@ def retry_query_with_backoff(query_func, max_retries=3, initial_delay=2):
             result = query_func()
             if result is not None:
                 if attempt > 0:
-                    print(f"[BQ RETRY] Data found after {attempt + 1} attempt(s)")
+                    print(f"[BigQuery Retry] Data found after {attempt + 1} attempt(s)")
                 return result
 
             # Data not found yet, wait before retrying
             if attempt < max_retries - 1:
-                print(f"[BQ RETRY] No data found, waiting {delay}s before retry {attempt + 2}/{max_retries}...")
+                print(f"[BigQuery Retry] No data yet, waiting {delay}s before retry {attempt + 2}/{max_retries}...")
                 time.sleep(delay)
                 delay *= 2  # Exponential backoff
         except Exception as e:
-            print(f"[BQ RETRY] Query error on attempt {attempt + 1}: {e}")
+            print(f"[BigQuery Retry] Query error on attempt {attempt + 1}: {str(e)[:100]}")
             if attempt < max_retries - 1:
                 time.sleep(delay)
                 delay *= 2

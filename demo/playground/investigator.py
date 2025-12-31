@@ -116,7 +116,11 @@ class PlaygroundInvestigator:
             app_name="playground"
         )
 
-        # Build investigation prompt
+        # Build investigation prompt with comprehensive fallback data
+        customer_profile = transaction_data.get('customer_profile', {})
+        beneficiary_data = transaction_data.get('beneficiary_data', {})
+        session_data = transaction_data.get('session', {})
+
         investigation_prompt = f"""Investigate this transaction for potential fraud:
 
 Transaction ID: {tx_id}
@@ -124,8 +128,34 @@ User ID: {user_id}
 Amount: ${transaction_data.get('amount', 0):.2f}
 Beneficiary Account: {transaction_data.get('beneficiary_account_id', 'unknown')}
 
-Use your tools to gather context about the user, beneficiary, and session.
-Provide a comprehensive risk assessment."""
+IMPORTANT: You MUST call all three tools (get_user_history, get_beneficiary_risk, get_session_context) to get the latest data from BigQuery.
+The data below is provided ONLY as fallback if the tools return null/empty results.
+
+Fallback Customer Profile:
+- User ID: {customer_profile.get('user_id', user_id)}
+- Age Group: {customer_profile.get('age_group', 'unknown')}
+- Account Tenure: {customer_profile.get('account_tenure_days', 'unknown')} days
+- Avg Transfer Amount: ${customer_profile.get('avg_transfer_amount', 0):.2f}
+- Behavioral Segment: {customer_profile.get('behavioral_segment', 'unknown')}
+
+Fallback Beneficiary Data:
+- Account ID: {beneficiary_data.get('account_id', transaction_data.get('beneficiary_account_id', 'unknown'))}
+- Account Age: {beneficiary_data.get('account_age_hours', 'unknown')} hours
+- Risk Score: {beneficiary_data.get('risk_score', 'unknown')}
+- Linked to Flagged Device: {beneficiary_data.get('linked_to_flagged_device', 'unknown')}
+
+Fallback Session Context:
+- Session ID: {session_data.get('session_id', 'unknown')}
+- User ID: {session_data.get('user_id', user_id)}
+- Is Call Active: {session_data.get('is_call_active', 'unknown')}
+- Typing Cadence Score: {session_data.get('typing_cadence_score', 'unknown')}
+- Session Duration: {session_data.get('session_duration_seconds', 'unknown')} seconds
+- Battery Level: {session_data.get('battery_level', 'unknown')}%
+- Device Rooted/Jailbroken: {session_data.get('is_rooted_jailbroken', 'unknown')}
+- Time of Day: Hour {session_data.get('time_of_day_hour', 'unknown')}
+
+Use your tools to gather the most up-to-date context. If tools return null, use the fallback data above.
+Provide a comprehensive risk assessment following your JSON output format."""
 
         msg = types.Content(
             role="user",
@@ -139,19 +169,27 @@ Provide a comprehensive risk assessment."""
                 session_id=session_id_det,
                 new_message=msg
             ):
-                # Capture tool calls
-                if hasattr(event, 'actions') and event.actions:
-                    for action in event.actions:
-                        if hasattr(action, 'tool_call') and action.tool_call:
+                # Capture tool calls using the correct ADK methods
+                if hasattr(event, 'get_function_calls'):
+                    function_calls = event.get_function_calls()
+                    if function_calls:
+                        for fc in function_calls:
+                            tool_name = fc.name if hasattr(fc, 'name') else str(fc)
+                            self._emit("log", f"🔧 Detective calling tool: {tool_name}")
                             self._emit(
                                 "tool_call",
-                                f"Calling {action.tool_call.name}",
+                                f"Calling {tool_name}",
                                 agent="Detective",
-                                tool=action.tool_call.name,
-                                args=str(action.tool_call.args)[:200]
+                                tool=tool_name,
+                                args=str(fc.args)[:200] if hasattr(fc, 'args') else ""
                             )
-                        if hasattr(action, 'tool_response') and action.tool_response:
-                            response_str = str(action.tool_response)[:300]
+
+                if hasattr(event, 'get_function_responses'):
+                    function_responses = event.get_function_responses()
+                    if function_responses:
+                        for fr in function_responses:
+                            response_str = str(fr.response)[:300] if hasattr(fr, 'response') else str(fr)[:300]
+                            self._emit("log", f"📥 Tool response: {response_str[:100]}...")
                             self._emit(
                                 "tool_result",
                                 response_str,

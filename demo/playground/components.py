@@ -160,6 +160,8 @@ def render_log_container(logs: list, max_height: int = 300):
             log_html += f'<div><span style="color: #6E7681;">[{timestamp}]</span> <span style="color: #58A6FF;">🔧 {agent}</span> <span style="color: #D29922;">{tool}</span></div>'
         elif entry_type == "tool_result":
             log_html += f'<div style="padding-left: 2rem; color: #8B949E;">{content[:150]}{"..." if len(content) > 150 else ""}</div>'
+        elif entry_type == "tool_log":
+            log_html += f'<div><span style="color: #6E7681;">[{timestamp}]</span> <span style="color: #8B949E;">🔍 {content}</span></div>'
         elif entry_type == "reasoning":
             color = "#58A6FF" if agent == "Detective" else "#FF6B6B" if agent == "Judge" else "#FAFAFA"
             log_html += f'<div><span style="color: #6E7681;">[{timestamp}]</span> <span style="color: {color};">{agent}:</span> {content[:200]}{"..." if len(content) > 200 else ""}</div>'

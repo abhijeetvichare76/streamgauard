@@ -10,6 +10,18 @@ from .bigquery_utils import retry_query_with_backoff
 # Load environment variables
 load_dotenv()
 
+def _get_form_fallback(data_type: str, key: str):
+    """Get form data from Streamlit session state as fallback."""
+    try:
+        import streamlit as st
+        if hasattr(st, 'session_state'):
+            form_key = f"form_{key}"
+            if form_key in st.session_state:
+                return st.session_state[form_key]
+    except (ImportError, Exception):
+        pass
+    return None
+
 # Initialize client lazily
 def get_client():
     """
@@ -154,7 +166,45 @@ def get_session_context(transaction_id: str) -> dict:
         session = retry_query_with_backoff(execute_session_query, max_retries=3, initial_delay=2)
 
         if not session:
-            print(f"[BQ] Session for transaction {transaction_id} not found after retries")
+            print(f"[BigQuery] Session for transaction {transaction_id} not found after retries, trying form fallback...")
+
+            # Try to get data from form (playground mode)
+            form_user_id = _get_form_fallback("session", "user_id")
+            if form_user_id:
+                print(f"[BigQuery] Using form data for session")
+                is_call = _get_form_fallback("session", "call_active") or False
+                typing = _get_form_fallback("session", "typing") or 0.5
+                duration = _get_form_fallback("session", "duration") or 120
+                lat = _get_form_fallback("session", "lat") or 0.0
+                hour = _get_form_fallback("session", "hour") or 12
+                rooted = _get_form_fallback("session", "rooted") or False
+
+                distance_km = 320.0 if lat > 40.0 else 0.0
+                time_risk = "HIGH" if hour < 6 or hour > 23 else "LOW"
+
+                return {
+                    "transaction_id": transaction_id,
+                    "user_id": form_user_id,
+                    "session_id": f"pg_form_session_{transaction_id}",
+                    "is_call_active": is_call,
+                    "behavioral_metrics": {
+                        "typing_cadence": float(typing),
+                        "session_duration_sec": duration,
+                        "rushed": (duration < 60)
+                    },
+                    "device_context": {
+                        "battery_level": 75,
+                        "is_rooted": rooted,
+                        "os_risk": "HIGH" if rooted else "LOW"
+                    },
+                    "risk_signals": {
+                        "velocity_last_hour": 1,
+                        "time_of_day_risk": time_risk,
+                        "geolocation_distance_km": distance_km,
+                        "geolocation_anomalous": (distance_km > 50.0)
+                    }
+                }
+
             return {"transaction_id": transaction_id, "status": "no_session_found", "risk": "high_missing_context"}
 
         # 2. Calculate Velocity (Sessions in last hour for this user)
