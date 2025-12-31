@@ -307,7 +307,7 @@ The system is working perfectly.<br>
 </div>
 <h2 class="reveal-item" style="color: #FAFAFA; font-size: 3.2rem; line-height: 1.2; margin-bottom: 2rem; font-weight: 800;">Protect Your Customers.<br>Preserve Their Trust.</h2>
 <p class="reveal-item" style="color: #8B949E; font-size: 1.4rem; margin-bottom: 5rem; font-weight: 300;">
-Step inside the dashboard to see how the StreamGuard swarm identifies the invisible threads of fraud.
+Experience the interactive demo to see how AI agents catch the invisible threads of fraud that traditional systems miss.
 </p>
 
 <div class="reveal-item" style="display: flex; justify-content: center;">
@@ -345,7 +345,7 @@ background: linear-gradient(90deg, #4ECDC4, transparent);
     # Copyright text below button
     st.markdown("""
     <p style="text-align: center; color: #4B5563; font-size: 0.95rem; margin-top: 3rem; letter-spacing: 2px; font-weight: 500;">
-        © 2024 STREAMGUARD • BUILT FOR INNOVATION
+        © 2025 STREAMGUARD • BUILT FOR INNOVATION
     </p>
     """, unsafe_allow_html=True)
 
