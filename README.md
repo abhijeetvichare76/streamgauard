@@ -14,16 +14,17 @@ Meet Betty. She's 75 years old. Last month, a scammer nearly stole her life savi
 All her credentials were legitimate. She logged in from her own phone, sitting at home. She typed the amount herself and clicked "Confirm Transfer." Her bank's traditional fraud system saw nothing wrong. By the time she realized it was a scam, the money would have been gone.
 
 **Authorized Push Payment (APP) fraud** is devastating:
-- **$12.5B** in US losses (2024 FTC)
-- **80%** of victims on active call with scammer (FCC)
-- **77%** success rate for AI voice cloning attacks (McAfee)
+- **$12.5B** total US fraud losses (2024), ↑25% year-over-year
+- **$1,480** median loss when scam starts with phone call (highest of any contact method)
+- **3x higher** median loss for victims 80+ vs. younger adults ($1,450 vs. $500)
+- **77%** of AI voice cloning victims lost money
 - **Traditional systems fail:** All credentials are legitimate, transactions are authorized
 
-Sources: 
-https://www.psr.org.uk/media/rhelv4op/ps25-5-app-scams-reimbursement-consolidated-policy-statement-may-2025.pdf
-https://www.hoganlovells.com/en/publications/uk-app-fraud-what-in-scope-psps-need-to-know-about-the-new-mandatory-reimbursement-regime
-https://consumer.ftc.gov/consumer-alerts/2024/02/think-you-know-what-top-scam-2023-was-take-guess
-https://bankingjournal.aba.com/2024/11/ftc-older-adults-lost-up-to-61-5b-to-fraud-in-2023/
+**Sources:**
+- FTC Consumer Sentinel Network Data Book 2024
+- FTC Data Spotlight: Fraud Losses by Contact Method
+- FTC Protecting Older Consumers Report 2024
+- McAfee "The State of the Scamiverse" Report 2024
 ---
 
 ## The Solution: AI Agent Swarm
@@ -107,9 +108,6 @@ cp terraform/.env.example terraform/.env
 
 # 4. Deploy infrastructure
 cd terraform && terraform init && terraform apply -auto-approve
-
-# 5. Run agent swarm
-cd .. && python scripts/run_adk_swarm.py
 ```
 
 ### Try the Demo

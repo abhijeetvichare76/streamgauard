@@ -161,29 +161,38 @@ The system is working perfectly.<br>
 
 <!-- Scene 5: The Scale -->
 <section class="scroll-fold" id="scene-5">
-<div style="max-width: 1000px; margin: 0 auto; width: 100%;">
+<div style="max-width: 1100px; margin: 0 auto; width: 100%;">
 <h2 class="reveal-item" style="text-align: center; color: #FAFAFA; font-size: 3rem; margin-bottom: 5rem;">The Scale of the Problem</h2>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-bottom: 4rem;">
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; margin-bottom: 4rem;">
 <div class="metric-box reveal-item">
 <p class="metric-value">$12.5B</p>
-<p class="metric-label">US Fraud Losses (2024 Est.)</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: FTC Data</p>
+<p class="metric-label">Total US fraud losses (2024)</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.85rem; color: #4ECDC4; font-weight: 600;">↑ 25% year-over-year</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.7rem; opacity: 0.5;">Source: FTC / McAfee Report</p>
 </div>
 <div class="metric-box reveal-item">
-<p class="metric-value">80%</p>
-<p class="metric-label">Of victims on a call with scammer</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: FCC Reports</p>
+<p class="metric-value">$1,480</p>
+<p class="metric-label">Median loss when scam starts with phone call</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.85rem; color: #FF6B6B; font-weight: 600;">Highest of any contact method</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.7rem; opacity: 0.5;">Source: FTC Data Spotlight</p>
+</div>
+<div class="metric-box reveal-item">
+<p class="metric-value">3x</p>
+<p class="metric-label">Higher median loss for victims 80+ vs. younger adults</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.85rem; color: #D29922; font-weight: 600;">$1,450 vs. $500</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.7rem; opacity: 0.5;">Source: FTC Protecting Older Consumers Report</p>
 </div>
 <div class="metric-box reveal-item">
 <p class="metric-value">77%</p>
-<p class="metric-label">Success rate of AI Voice Scams</p>
-<p style="margin:0; font-size: 0.7rem; opacity: 0.5;">Source: McAfee</p>
+<p class="metric-label">Of AI voice cloning victims lost money</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.85rem; color: #FF6B6B; font-weight: 600;">New threat vector growing rapidly</p>
+<p style="margin:0.5rem 0 0 0; font-size: 0.7rem; opacity: 0.5;">Source: McAfee "The State of the Scamiverse"</p>
 </div>
 </div>
 
-<p class="reveal-item" style="text-align: center; font-size: 1.2rem; color: #8B949E; font-style: italic;">
-"And these are just the reported cases. Shame keeps many victims silent."
+<p class="reveal-item" style="text-align: center; font-size: 1.2rem; color: #8B949E; font-style: italic; max-width: 700px; margin: 0 auto;">
+"And these are just the reported cases. Shame and embarrassment keep many victims silent."
 </p>
 </div>
 </section>

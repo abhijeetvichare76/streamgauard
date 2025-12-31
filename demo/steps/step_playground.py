@@ -222,7 +222,7 @@ def run_investigation():
         if use_real_confluent:
             # Phase 3: Wait for Flink & Consume alert
             add_log({"type": "phase", "content": "FLINK ROUTING & ALERT CONSUMPTION"})
-            alert = consume_alert(tx_id, timeout_sec=45, on_progress=add_log)
+            alert = consume_alert(tx_id, timeout_sec=60, on_progress=add_log)
 
             if not alert:
                 add_log({"type": "warning", "content": "Alert timeout, falling back to simulation"})
